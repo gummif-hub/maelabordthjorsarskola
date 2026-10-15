@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="is">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mælaborð Þjórsárskóla</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <h1 id="skoli">Mælaborð</h1>
+      <p id="undirtitill" class="muted"></p>
+    </div>
+    <div class="controls">
+      <label class="field">
+        <span>Skólaár</span>
+        <select id="ar-val" aria-label="Velja skólaár"></select>
+      </label>
+      <button type="button" id="opna-btn" class="btn">Opna Excel-skjal</button>
+      <button type="button" id="prenta-btn" class="btn btn-primary">Prenta skýrslu</button>
+      <input type="file" id="skra-inntak" accept=".xlsx,.xls,.xlsm" hidden>
+    </div>
+  </div>
+  <nav class="tabs" id="flipar" aria-label="Liðir mælaborðsins">
+    <a href="#yfirlit" data-tab="yfirlit">Yfirlit</a>
+    <a href="#nemendur" data-tab="nemendur">Nemendur</a>
+    <a href="#maeting" data-tab="maeting">Mæting</a>
+    <a href="#kennsla" data-tab="kennsla">Kennsla og innra mat</a>
+    <a href="#starfsfolk" data-tab="starfsfolk">Starfsfólk</a>
+    <a href="#samskipti" data-tab="samskipti">Samskipti</a>
+    <a href="#oryggi" data-tab="oryggi">Öryggi</a>
+    <a href="#akstur" data-tab="akstur">Skólaakstur</a>
+    <a href="#fjarhagur" data-tab="fjarhagur">Fjárhagur</a>
+  </nav>
+</header>
+
+<main id="efni">
+  <div id="daemi-borði" class="banner" hidden>Dæmagögn: tölurnar á þessari síðu eru ekki raunverulegar.</div>
+  <div id="villur" class="banner banner-warn" hidden></div>
+
+  <section id="byrjun" class="panel welcome" hidden>
+    <h2>Opnaðu gagnaskjalið</h2>
+    <p>Síðan fann ekki gagnaskjalið á vefnum. Veldu Excel-skjalið af tölvunni þinni. Það er lesið í vafranum og fer hvergi annað.</p>
+    <div id="drop" class="drop" tabindex="0" role="button" aria-label="Velja Excel-skjal">
+      <strong>Dragðu skjalið hingað</strong>
+      <span class="muted">eða smelltu til að velja maelabord.xlsx</span>
+    </div>
+  </section>
+
+  <!-- YFIRLIT -->
+  <section class="tab" id="t-yfirlit" data-title="Yfirlit">
+    <h2 class="sec-title">Yfirlit <span class="ar-merki"></span></h2>
+    <p class="lead" id="yfirlit-texti"></p>
+    <div class="kpis" id="kpis"></div>
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3>Mælikvarðar og viðmið</h3>
+          <p class="muted small" id="skorkort-skyring"></p>
+        </div>
+        <div class="counts" id="skorkort-talning"></div>
+      </div>
+      <div class="chips" id="svid-val" role="group" aria-label="Sía eftir sviði"></div>
+      <div class="table-wrap">
+        <table class="tbl" id="skorkort">
+          <thead><tr>
+            <th>Mælikvarði</th><th class="hide-sm">Svið</th><th class="hide-sm">Uppruni</th>
+            <th class="num" id="sk-fyrra">Fyrra ár</th><th class="num" id="sk-nu">Valið ár</th>
+            <th class="num">Viðmið</th><th>Staða</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEMENDUR -->
+  <section class="tab" id="t-nemendur" data-title="Nemendur">
+    <h2 class="sec-title">Nemendur <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-nemendur"></div>
+    <div class="grid">
+      <div class="panel"><h3>Nemendafjöldi eftir skólastigum</h3><p class="muted small">Fjöldi 1. október ár hvert</p><div class="chart"><canvas id="c-nemendur"></canvas></div></div>
+      <div class="panel"><h3>Nemendur sem njóta stuðnings</h3><p class="muted small">Hlutfall allra nemenda. Aðeins heildartölur vegna persónuverndar.</p><div class="chart"><canvas id="c-studningur"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- MÆTING -->
+  <section class="tab" id="t-maeting" data-title="Mæting">
+    <h2 class="sec-title">Mæting <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-maeting"></div>
+    <div class="panel"><h3>Mæting nemenda eftir mánuðum</h3><p class="muted small">Valið skólaár borið saman við árið á undan. Brotna línan er viðmiðið.</p><div class="chart chart-lg"><canvas id="c-maeting"></canvas></div></div>
+  </section>
+
+  <!-- KENNSLA -->
+  <section class="tab" id="t-kennsla" data-title="Kennsla og innra mat">
+    <h2 class="sec-title">Kennsla og innra mat <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-kennsla"></div>
+    <div class="panel">
+      <h3>Áherslukennslustundir eftir árgöngum</h3>
+      <p class="muted small">Mínútur á viku. Brotna línan er viðmið: viðmiðunarstundaskrá aðalnámskrár (meðaltal á árgang í hverju stigi) og eigið viðmið um útinám. Rauð súla nær ekki viðmiði.</p>
+      <div class="grid grid-3">
+        <div><h4>Útinám</h4><div class="chart chart-sm"><canvas id="c-utinam"></canvas></div></div>
+        <div><h4>List- og verkgreinar</h4><div class="chart chart-sm"><canvas id="c-list"></canvas></div></div>
+        <div><h4>Íþróttir</h4><div class="chart chart-sm"><canvas id="c-ithrottir"></canvas></div></div>
+      </div>
+    </div>
+    <div class="panel"><h3>Staða innra mats eftir sviðum</h3><p class="muted small">Gæðaviðmið í Bravo Lessons</p><div class="chart"><canvas id="c-innramat"></canvas></div></div>
+  </section>
+
+  <!-- STARFSFÓLK -->
+  <section class="tab" id="t-starfsfolk" data-title="Starfsfólk">
+    <h2 class="sec-title">Starfsfólk <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-starfsfolk"></div>
+    <div class="grid">
+      <div class="panel"><h3>Forföll og mönnun</h3><p class="muted small">Forfalladagar starfsfólks á mánuði</p><div class="chart"><canvas id="c-forfoll"></canvas></div></div>
+      <div class="panel"><h3>Réttindi og þjálfun kennara</h3><p class="muted small">Hlutfall kennara hvert skólaár</p><div class="chart"><canvas id="c-thjalfun"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- SAMSKIPTI -->
+  <section class="tab" id="t-samskipti" data-title="Samskipti">
+    <h2 class="sec-title">Samskipti <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-samskipti"></div>
+    <div class="panel"><h3>Samskipti eftir mánuðum</h3><p class="muted small">Tölvupóstar til foreldra og fréttir sem skólinn birti</p><div class="chart chart-lg"><canvas id="c-samskipti"></canvas></div></div>
+  </section>
+
+  <!-- ÖRYGGI -->
+  <section class="tab" id="t-oryggi" data-title="Öryggi og viðbúnaður">
+    <h2 class="sec-title">Öryggi og viðbúnaður <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-oryggi"></div>
+    <div class="grid">
+      <div class="panel"><h3>Veður og röskun á skólastarfi</h3><p class="muted small">Dagar á mánuði</p><div class="chart"><canvas id="c-vedur"></canvas></div></div>
+      <div class="panel"><h3>Atvik og æfingar</h3><p class="muted small">Skráð atvik og slys, rýmingar- og viðbragðsæfingar</p><div class="chart"><canvas id="c-atvik"></canvas></div></div>
+    </div>
+  </section>
+
+  <!-- SKÓLAAKSTUR -->
+  <section class="tab" id="t-akstur" data-title="Skólaakstur">
+    <h2 class="sec-title">Skólaakstur <span class="ar-merki"></span></h2>
+    <div class="kpis" id="kpis-akstur"></div>
+    <div class="panel"><h3>Frávik í skólaakstri eftir mánuðum</h3><p class="muted small">Ferðir felldar niður (oftast vegna veðurs), atvik og kvartanir</p><div class="chart chart-lg"><canvas id="c-akstur"></canvas></div></div>
+  </section>
+
+  <!-- FJÁRHAGUR -->
+  <section class="tab" id="t-fjarhagur" data-title="Fjárhagur">
+    <h2 class="sec-title">Fjárhagur <span id="fj-merki" class="muted"></span></h2>
+    <div class="kpis" id="kpis-fjarhagur"></div>
+    <div class="grid">
+      <div class="panel">
+        <h3>Áætlun og raun eftir flokkum</h3>
+        <p class="muted small">Millj. kr. Jákvætt frávik þýðir umfram áætlun.</p>
+        <div class="table-wrap">
+          <table class="tbl" id="fj-tafla">
+            <thead><tr><th>Flokkur</th><th class="num hide-sm">Áætlun ársins</th><th class="num">Áætlun til dags</th><th class="num">Raun til dags</th><th class="num">Frávik</th></tr></thead>
+            <tbody></tbody><tfoot></tfoot>
+          </table>
+        </div>
+      </div>
+      <div class="panel"><h3>Áætlun og raun til dags</h3><p class="muted small">Millj. kr.</p><div class="chart"><canvas id="c-fjarhagur"></canvas></div></div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p id="heimild" class="muted small"></p>
+</footer>
+
+<script src="lib/xlsx.full.min.js"></script>
+<script src="lib/chart.umd.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
